@@ -1,15 +1,40 @@
 //********************************************************
 //******  Rutinas para Nokia 3310 LCD - 3310pic.c  *******
 //********************************************************
-//Microcontrolador:	PIC16F88 (Tentativo)
-//Compilador:		GSC C
-//Autor original:	CC Dharmani, Chennai (India)
-//Fecha:			Septiembre 2008
+//Microcontrolador:   PIC16F88 (Tentativo)
+//Compilador:      GSC C
+//Autor original:   CC Dharmani, Chennai (India)
+//Fecha:         Septiembre 2008
 //********************************************************
 
 //Modified to fit this project with permission of the author.
 
-#include "3310_routines.h"
+//#include "3310_routines.h"
+
+//Nuevas rutinas de la pija
+void set_dc_pin(void)
+{
+   bit_set(PORTC, 2)
+}
+void clear_dc_pin(void)
+{
+   bit_clear(PORTC, 2);
+}
+void set_sce_pin(void)
+{
+   bit_set(PORTC, 1);
+}
+void clear_sce_pin(void){
+   bit_clear(PORTC, 1);
+}
+void set_rst_pin(void){
+   //
+}
+void clear_rst_pin(void){
+   //
+}
+
+
 
 /*--------------------------------------------------------------------------------------------------
   Name         :  spi_init
@@ -28,15 +53,15 @@ void spi_init(void)
 void LCD_init ( void )
 {
     
-	delay_ms(100);
-	
-	CLEAR_SCE_PIN;    //Enable LCD
+   delay_ms(100);
+   
+   clear_sce_pin();    //Enable LCD
     
-	CLEAR_RST_PIN;	//reset LCD
+   clear_rst_pin();   //reset LCD
     delay_ms(100);
-    SET_RST_PIN;
-	
-	SET_SCE_PIN;	//disable LCD
+    set_rst_pin();
+   
+   SET_SCE_PIN;   //disable LCD
 
     LCD_writeCommand( 0x21 );  // LCD Extended Commands.
     LCD_writeCommand( 0xE0 );  // Set LCD Vop (Contrast).
@@ -56,17 +81,17 @@ void LCD_init ( void )
 --------------------------------------------------------------------------------------------------*/
 void LCD_writeCommand ( unsigned char command )
 {
-    CLEAR_SCE_PIN;	  //enable LCD
-	
-	CLEAR_DC_PIN;	  //set LCD in command mode
-	
+    CLEAR_SCE_PIN();     //enable LCD
+   
+   CLEAR_DC_PIN();     //set LCD in command mode
+   
     //  Send data to display controller.
     SPDR = command;
 
     //  Wait until Tx register empty.
     while ( !(SPSR & 0x80) );
 
-    SET_SCE_PIN;   	 //disable LCD
+    SET_SCE_PIN();       //disable LCD
 }
 
 /*--------------------------------------------------------------------------------------------------
@@ -77,17 +102,17 @@ void LCD_writeCommand ( unsigned char command )
 --------------------------------------------------------------------------------------------------*/
 void LCD_writeData ( unsigned char Data )
 {
-    CLEAR_SCE_PIN;	  //enable LCD
-	
-	SET_DC_PIN;	  //set LCD in Data mode
-	
+    clear_sce_pin();     //enable LCD
+   
+   set_dc_pin();     //set LCD in Data mode
+   
     //  Send data to display controller.
     SPDR = Data;
 
     //  Wait until Tx register empty.
     while ( !(SPSR & 0x80) );
 
-    SET_SCE_PIN;   	 //disable LCD
+    SET_SCE_PIN();       //disable LCD
 }
 
 /*--------------------------------------------------------------------------------------------------
@@ -99,14 +124,14 @@ void LCD_writeData ( unsigned char Data )
 void LCD_clear ( void )
 {
     int i,j;
-	
-	LCD_gotoXY (0,0);  	//start with (0,0) position
+   
+   LCD_gotoXY (0,0);     //start with (0,0) position
 
     for(i=0; i<8; i++)
-	  for(j=0; j<90; j++)
-	     LCD_writeData( 0x00 );
+     for(j=0; j<90; j++)
+        LCD_writeData( 0x00 );
    
-    LCD_gotoXY (0,0);	//bring the XY position back to (0,0)
+    LCD_gotoXY (0,0);   //bring the XY position back to (0,0)
       
 }
 
@@ -114,13 +139,13 @@ void LCD_clear ( void )
   Name         :  LCD_gotoXY
   Description  :  Sets cursor location to xy location corresponding to basic font size.
   Argument(s)  :  x - range: 0 to 84
-  			   	  y -> range: 0 to 5
+                   y -> range: 0 to 5
   Return value :  None.
 --------------------------------------------------------------------------------------------------*/
 void LCD_gotoXY ( unsigned char x, unsigned char y )
 {
     LCD_writeCommand (0x80 | x);   //column
-	LCD_writeCommand (0x40 | y);   //row
+   LCD_writeCommand (0x40 | y);   //row
 }
 
 
@@ -141,7 +166,7 @@ void LCD_writeChar (unsigned char ch)
    
    for(j=0; j<5; j++)
      LCD_writeData( smallFont [(ch-32)*5 + j] );
-	 
+    
    LCD_writeData( 0x00 );
 } 
 
@@ -159,20 +184,20 @@ void LCD_drawBorder (void )
   for(i=0; i<7; i++)
   {
     LCD_gotoXY (0,i);
-	
-	for(j=0; j<84; j++)
-	{
-	  if(j == 0 || j == 83)
-		LCD_writeData (0xff);		// first and last column solid fill to make line
-	  else if(i == 0)
-	    LCD_writeData (0x08);		// row 0 is having only 5 bits (not 8)
-	  else if(i == 6)
-	    LCD_writeData (0x04);		// row 6 is having only 3 bits (not 8)
-	  else
-	    LCD_writeData (0x00);
-	}
+   
+   for(j=0; j<84; j++)
+   {
+     if(j == 0 || j == 83)
+      LCD_writeData (0xff);      // first and last column solid fill to make line
+     else if(i == 0)
+       LCD_writeData (0x08);      // row 0 is having only 5 bits (not 8)
+     else if(i == 6)
+       LCD_writeData (0x04);      // row 6 is having only 3 bits (not 8)
+     else
+       LCD_writeData (0x00);
+   }
   }
-}	
+}   
 
 /*--------------------------------------------------------------------------------------------------
                                          End of file.

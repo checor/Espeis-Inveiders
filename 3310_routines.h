@@ -1,12 +1,12 @@
 //********************************************************
 //******  Rutinas para Nokia 3310 LCD - 3310pic.h  *******
 //********************************************************
-//Microcontrolador:	PIC16F88 (Tentativo)
-//Compilador:		GSC C
-//Autor original:	CC Dharmani, Chennai (India)
-//Autor del port:	Sergio Urbina (Mexico)
-//Fecha:			Junio 2013
-//Version:			0.0 experimental
+//Microcontrolador:   PIC16F88 (Tentativo)
+//Compilador:      GSC C
+//Autor original:   CC Dharmani, Chennai (India)
+//Autor del port:   Sergio Urbina (Mexico)
+//Fecha:         Junio 2013
+//Version:         0.0 experimental
 //********************************************************
 
 
@@ -19,12 +19,21 @@
 #define _3310_ROUTINES_H_
 
 //Need to redefine this
-#define SET_DC_PIN                 PORTB |= 0x01  
+/*#define SET_DC_PIN                 PORTB |= 0x01  
 #define CLEAR_DC_PIN               PORTB &= ~0x01 
 #define SET_SCE_PIN                PORTB |= 0x04
 #define CLEAR_SCE_PIN              PORTB &= ~0x04
 #define SET_RST_PIN                PORTB |= 0x10
-#define CLEAR_RST_PIN              PORTB |= 0x10
+#define CLEAR_RST_PIN              PORTB |= 0x10*/
+
+//Sacadas de la manga
+void set_dc_pin(void);
+void clear_dc_pin(void);
+void set_sce_pin(void);
+void clear_sce_pin(void);
+void set_rst_pin(void);
+void clear_rst_pin(void);
+
 
 void LCD_init ( void );
 void LCD_clear ( void );
@@ -32,7 +41,7 @@ void LCD_gotoXY ( unsigned char x, unsigned char y );
 void LCD_writeChar ( unsigned char character );
 void LCD_writeData ( unsigned char data );
 void LCD_writeCommand ( unsigned char command );
-void LCD_writeString_F ( const unsigned char *string);
+//void LCD_writeString_F ( const unsigned char *string);
 void LCD_setPixel ( unsigned char x, unsigned char y);
 void LCD_drawLine ( unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2 );
 void LCD_drawBorder (void );
@@ -54,6 +63,7 @@ static const unsigned char smallFont[] =
     0x3E, 0x51, 0x49, 0x45, 0x3E,   // 0
     0x00, 0x42, 0x7F, 0x40, 0x00,   // 1
     0x21, 0x41, 0x45, 0x4B, 0x31,   // 3
-	//Falta por agregar "Los pelucas"
+   //Falta por agregar "Los pelucas"
 }
 
+#endif  //  _3310_ROUTINES_H_

@@ -1,4 +1,5 @@
 #include "main.h"
+#include "3310_routines.h"
 #int_RTCC
 void  RTCC_isr(void) //Hora de actualizar la pantalla
 {
