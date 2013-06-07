@@ -23,6 +23,7 @@ void pic_init(){
    enable_interrupts(INT_TIMER1);
    //enable_interrupts(GLOBAL); Esta me da mala espina cuate
 //Setup_Oscillator parameter not selected from Intr Oscillotar Config tab
+   set_tris_c(0x00);
 }
 
 void main()
